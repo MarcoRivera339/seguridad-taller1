@@ -1,1 +1,60 @@
-<a routerLink="/inicio">Ir al inicio</a>
+<div class="max-w-3xl mx-auto p-6">
+    <h2 class="text-2xl font-semibold mb-4">Generador de claves RSA (OpenPGP)</h2>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Nombre (opcional)</label>
+        <input [(ngModel)]="name" class="block w-full rounded-lg border px-3 py-2" placeholder="Ej: Juan Perez" />
+    </div>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Email (opcional)</label>
+        <input [(ngModel)]="email" class="block w-full rounded-lg border px-3 py-2" placeholder="ejemplo@empresa.com" />
+    </div>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Frase / passphrase (obligatoria)</label>
+        <input [(ngModel)]="passphrase" type="password" class="block w-full rounded-lg border px-3 py-2"
+            placeholder="Introduce una frase secreta" />
+        <p class="text-xs text-gray-500 mt-1">La frase servirá para cifrar la clave privada. Guárdala en un lugar
+            seguro.</p>
+    </div>
+
+    <div class="flex gap-3 mb-6">
+        <button (click)="generate()" [disabled]="busy || !passphrase"
+            class="btn-primary px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60">
+            {{ busy ? 'Generando...' : 'Generar claves RSA (OpenPGP)' }}
+        </button>
+        <button (click)="clear()" class="px-4 py-2 rounded-lg border" [disabled]="busy">Limpiar</button>
+    </div>
+
+    <div *ngIf="publicKey || privateKey" class="space-y-4">
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="font-medium">Clave pública</h3>
+                <div class="flex gap-2">
+                    <button (click)="download('public.key', publicKey)" class="px-3 py-1 rounded border">Descargar
+                        .key</button>
+                    <button (click)="copyToClipboard(publicKey)" class="px-3 py-1 rounded border">Copiar</button>
+                </div>
+            </div>
+            <textarea readonly rows="8" class="w-full rounded-lg border p-2 font-mono text-xs"
+                [value]="publicKey"></textarea>
+        </div>
+
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="font-medium">Clave privada (cifrada con tu passphrase)</h3>
+                <div class="flex gap-2">
+                    <button (click)="download('private.key', privateKey)" class="px-3 py-1 rounded border">Descargar
+                        .key</button>
+                    <button (click)="copyToClipboard(privateKey)" class="px-3 py-1 rounded border">Copiar</button>
+                </div>
+            </div>
+            <textarea readonly rows="12" class="w-full rounded-lg border p-2 font-mono text-xs"
+                [value]="privateKey"></textarea>
+        </div>
+
+        <p class="text-sm text-gray-600">Nota: Kleopatra / GPG importan claves en formato OpenPGP ASCII-armored. Si
+            deseas usar extensión <code>.asc</code> o <code>.gpg</code>, cambia el nombre del archivo al descargar.</p>
+    </div>
+</div>
